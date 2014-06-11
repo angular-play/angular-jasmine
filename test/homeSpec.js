@@ -1,6 +1,6 @@
 describe("Home Module", function(){
 
-  var scope = null;
+  var scope, httpBackend;
 
   /**
   * Mock home module.
@@ -10,8 +10,11 @@ describe("Home Module", function(){
   /**
   * Mock home controller.
   */
-  beforeEach(angular.mock.inject(function($rootScope, $controller){
+  beforeEach(angular.mock.inject(function($rootScope, $controller, _$httpBackend_){
     scope = $rootScope.$new();
+    httpBackend = _$httpBackend_;
+    httpBackend.when("GET", "/user").respond({ name: "wk"});
+
     $controller("homeController", { $scope: scope});
   }));
 
@@ -20,5 +23,10 @@ describe("Home Module", function(){
   */
   it("should have variable message = 'Hello, world!'", function(){
     expect(scope.message).toBe("Hello, world!");
+  });
+
+  it("should fetch user", function(){
+    httpBackend.flush();
+    expect(scope.user.name).toBe("wk");
   });
 });
